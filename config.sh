@@ -145,7 +145,7 @@ case "$1" in
 	echo - keon
 	echo - peak
 	echo - leo
-	echo - hamachi
+	echo - hamachi [Alcatel One Touch Fire]
 	echo - helix
 	echo - wasabi
 	echo - tara
