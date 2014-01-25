@@ -140,6 +140,34 @@ case "$1" in
 	repo_sync $1
 	;;
 
+"sp6821a")
+        echo DEVICE=sp6821a_gonk >> .tmp-config &&
+        echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
+        repo_sync $1
+        ;;
+
+"sp7710lc")
+        echo DEVICE=sp7710lc_gonk >> .tmp-config &&
+        echo LUNCH=sp7710lc_gonk-userdebug >> .tmp-config &&
+        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
+        repo_sync sp7710ga
+        ;;
+
+"sp7710ga")
+        echo DEVICE=sp7710ga_gonk >> .tmp-config &&
+        echo LUNCH=sp7710ga_gonk-userdebug >> .tmp-config &&
+        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
+        repo_sync $1
+        ;;
+
+"sp7710gaplus")
+        echo DEVICE=sp7710gaplus_gonk >> .tmp-config &&
+        echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
+        echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
+        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
+        repo_sync sp7710ga
+        ;;
+
 "pandaboard")
 	echo DEVICE=panda >> .tmp-config &&
 	repo_sync $1
@@ -187,6 +215,10 @@ case "$1" in
 	echo - fugu
 	echo - tarako
 	echo - tara
+    echo - sp6821a ====== 128M RAM, v1.3 and master
+    echo - sp7710lc ===== 128M RAM, v1.3 and master
+    echo - sp7710ga ===== Only v1.2f
+    echo - sp7710gaplus = Dual SIM, v1.3 and master
 	echo - pandaboard
 	echo - emulator
 	echo - emulator-jb
