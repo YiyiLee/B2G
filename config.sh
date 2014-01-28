@@ -140,6 +140,10 @@ case "$1" in
 	repo_sync $1
 	;;
 
+"sprd-bootstrap")
+        repo_sync $1
+        ;;
+
 "sp6821a")
         echo DEVICE=sp6821a_gonk >> .tmp-config &&
         echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
@@ -215,10 +219,11 @@ case "$1" in
 	echo - fugu
 	echo - tarako
 	echo - tara
-    echo - sp6821a ====== 128M RAM, v1.3 and master
-    echo - sp7710lc ===== 128M RAM, v1.3 and master
-    echo - sp7710ga ===== Only v1.2f
-    echo - sp7710gaplus = Dual SIM, v1.3 and master
+    echo - sprd-bootstrap = Bootstrap sprd devices from non-Chinese sources
+    echo - sp6821a ======== 128M RAM, v1.3 and master
+    echo - sp7710lc ======= 128M RAM, v1.3 and master
+    echo - sp7710ga ======= Only v1.2f
+    echo - sp7710gaplus === Dual SIM, v1.3 and master
 	echo - pandaboard
 	echo - emulator
 	echo - emulator-jb
