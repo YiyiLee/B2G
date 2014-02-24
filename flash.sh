@@ -322,7 +322,7 @@ case "$DEVICE" in
 	exit $?
 	;;
 
-"otoro"|"unagi"|"keon"|"peak"|"inari"|"sp8810ea"|"sp7710"*|"wasabi")
+"otoro"|"unagi"|"keon"|"peak"|"inari"|"sp8810ea"|"sp7710"*|"wasabi"|"sp6821"*)
 	flash_fastboot nounlock $PROJECT
 	;;
 
