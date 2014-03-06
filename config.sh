@@ -30,7 +30,15 @@ case `uname` in
 	exit -1
 esac
 
-GITREPO=${GITREPO:-"git://github.com/comoyo/b2g-manifest"}
+case "$1" in
+sp*)
+    echo "Spreadtrum device detected. Using spreadtrym repo for b2g-manifest"
+    GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
+    ;;
+
+*)  GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
+    ;;
+esac
 BRANCH=${BRANCH:-master}
 
 while [ $# -ge 1 ]; do
