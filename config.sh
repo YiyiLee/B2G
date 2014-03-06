@@ -233,8 +233,6 @@ case "$1" in
 	echo - tara
     echo - sprd-bootstrap = Bootstrap sprd devices from non-Chinese sources
     echo - sp6821a ======== 128M RAM, v1.3 and master -- Use branch v1.3t for now!
-    echo - sp7710lc ======= 128M RAM, v1.3 and master
-    echo - sp7710ga ======= Only v1.2f
     echo - sp7710gaplus === Dual SIM, v1.3 and master
 	echo - pandaboard
 	echo - flatfish
