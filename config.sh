@@ -158,20 +158,6 @@ case "$1" in
         repo_sync $1
         ;;
 
-"sp7710lc")
-        echo DEVICE=sp7710lc_gonk >> .tmp-config &&
-        echo LUNCH=sp7710lc_gonk-userdebug >> .tmp-config &&
-        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
-        repo_sync sp7710ga
-        ;;
-
-"sp7710ga")
-        echo DEVICE=sp7710ga_gonk >> .tmp-config &&
-        echo LUNCH=sp7710ga_gonk-userdebug >> .tmp-config &&
-        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
-        repo_sync $1
-        ;;
-
 "sp7710gaplus")
         echo DEVICE=sp7710gaplus_gonk >> .tmp-config &&
         echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
