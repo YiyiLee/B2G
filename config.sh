@@ -155,7 +155,16 @@ case "$1" in
 "sp6821a")
         echo DEVICE=sp6821a_gonk >> .tmp-config &&
         echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
-        repo_sync $1
+        if [ $BRANCH = v1.3* ]; then
+            echo DEVICE_NAME=sp6821a_gonk4.0 >> .tmp-config
+            BRANCH=sprd repo_sync sp6821a_gonk4.0
+        elif [ $BRANCH = master ]; then
+            echo DEVICE_NAME=sp6821a_gonk4.0_master >> .tmp-config
+            BRANCH=sprd repo_sync sp6821a_gonk4.0_master
+        else
+            echo "Branch $BRANCH not supported for device $1"
+            exit 1
+        fi
         ;;
 
 "sp7710gaplus")
@@ -163,7 +172,16 @@ case "$1" in
         echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
         echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
         echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
-        repo_sync sp7710ga
+        if [ $BRANCH = v1.3* ]; then
+            echo DEVICE_NAME=sp7710gaplus_gonk4.0 >> .tmp-config
+            BRANCH=sprd repo_sync sp7710ga_gonk4.0_v1.3
+        elif [ $BRANCH = master ]; then
+            echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
+            BRANCH=sprd repo_sync sp7710ga_gonk4.0_master
+        else
+            echo "Branch $BRANCH not supported for device $1"
+            exit 1
+        fi
         ;;
 
 "pandaboard")
