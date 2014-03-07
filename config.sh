@@ -241,6 +241,11 @@ case "$1" in
 		exit 1
 		;;
 	esac
+
+"dolphin")
+	echo DEVICE=scx15_sp7715ga >> .tmp-config &&
+	echo PRODUCT_NAME=scx15_sp7715gaplus >> .tmp-config &&
+	repo_sync $1
 	;;
 
 "pandaboard")
@@ -294,6 +299,7 @@ case "$1" in
 	echo - sp6821a ======== 128M RAM, v1.3 and master -- Use branch v1.3 for now!
 	echo - sp7710gaplus === Dual SIM, v1.3 and master
 	echo - sp7715ga ======= Dual SIM, v1.4
+	echo - dolphin
 	echo - pandaboard
 	echo - flatfish
 	echo - flame
