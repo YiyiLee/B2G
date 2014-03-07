@@ -6,8 +6,8 @@ sync_flags=""
 repo_sync() {
 	rm -rf .repo/manifest* &&
 	$REPO init -u $GITREPO -b $BRANCH -m $1.xml &&
-    mv .repo/manifest.xml .repo/manifest.xml.original &&
-    sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
+	mv .repo/manifest.xml .repo/manifest.xml.original &&
+	sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
 	$REPO sync $sync_flags
 	ret=$?
 	if [ "$GITREPO" = "$GIT_TEMP_REPO" ]; then
@@ -34,12 +34,12 @@ esac
 
 case "$1" in
 sp*)
-    echo "Spreadtrum device detected. Using spreadtrym repo for b2g-manifest"
-    GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
-    ;;
+	echo "Spreadtrum device detected. Using spreadtrum repo for b2g-manifest"
+	GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
+	;;
 
 *)  GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
-    ;;
+	;;
 esac
 BRANCH=${BRANCH:-master}
 
@@ -151,40 +151,48 @@ case "$1" in
 	;;
 
 "sprd-bootstrap")
-        repo_sync $1
-        ;;
+	repo_sync $1
+	;;
 
 "sp6821a")
-        echo DEVICE=sp6821a_gonk >> .tmp-config &&
-        echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
-        if [ $BRANCH = v1.3* ]; then
-            echo DEVICE_NAME=sp6821a_gonk4.0 >> .tmp-config
-            BRANCH=sprd repo_sync sp6821a_gonk4.0
-        elif [ $BRANCH = master ]; then
-            echo DEVICE_NAME=sp6821a_gonk4.0_master >> .tmp-config
-            BRANCH=sprd repo_sync sp6821a_gonk4.0_master
-        else
-            echo "Branch $BRANCH not supported for device $1"
-            exit 1
-        fi
-        ;;
+	echo DEVICE=sp6821a_gonk >> .tmp-config &&
+	echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
+	case "$BRANCH" in
+	"v1.3"*)
+		echo DEVICE_NAME=sp6821a_gonk4.0 >> .tmp-config
+		BRANCH=sprd repo_sync sp6821a_gonk4.0
+		;;
+	"master")
+		echo DEVICE_NAME=sp6821a_gonk4.0_master >> .tmp-config
+		BRANCH=sprd repo_sync sp6821a_gonk4.0_master
+		;;
+	*)
+		echo "Branch $BRANCH not supported for device $1"
+		exit 1
+		;;
+	esac
+	;;
 
 "sp7710gaplus")
-        echo DEVICE=sp7710gaplus_gonk >> .tmp-config &&
-        echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
-        echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
-        echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
-        if [ $BRANCH = v1.3* ]; then
-            echo DEVICE_NAME=sp7710gaplus_gonk4.0 >> .tmp-config
-            BRANCH=sprd repo_sync sp7710ga_gonk4.0_v1.3
-        elif [ $BRANCH = master ]; then
-            echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
-            BRANCH=sprd repo_sync sp7710ga_gonk4.0_master
-        else
-            echo "Branch $BRANCH not supported for device $1"
-            exit 1
-        fi
-        ;;
+	echo DEVICE=sp7710gaplus_gonk >> .tmp-config &&
+	echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
+	echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
+	echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
+	case "$BRANCH" in
+		"v1.3"*)
+		echo DEVICE_NAME=sp7710gaplus_gonk4.0 >> .tmp-config
+		BRANCH=sprd repo_sync sp7710ga_gonk4.0_v1.3
+		;;
+	"master")
+		echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
+		BRANCH=sprd repo_sync sp7710ga_gonk4.0_master
+		;;
+	*)
+		echo "Branch $BRANCH not supported for device $1"
+		exit 1
+		;;
+	esac
+	;;
 
 "pandaboard")
 	echo DEVICE=panda >> .tmp-config &&
@@ -233,9 +241,9 @@ case "$1" in
 	echo - fugu
 	echo - tarako
 	echo - tara
-    echo - sprd-bootstrap = Bootstrap sprd devices from non-Chinese sources
-    echo - sp6821a ======== 128M RAM, v1.3 and master -- Use branch v1.3t for now!
-    echo - sp7710gaplus === Dual SIM, v1.3 and master
+	echo - sprd-bootstrap = Bootstrap sprd devices from non-Chinese sources
+	echo - sp6821a ======== 128M RAM, v1.3 and master -- Use branch v1.3 for now!
+	echo - sp7710gaplus === Dual SIM, v1.3 and master
 	echo - pandaboard
 	echo - flatfish
 	echo - emulator
