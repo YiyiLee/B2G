@@ -6,6 +6,8 @@ sync_flags=""
 repo_sync() {
 	rm -rf .repo/manifest* &&
 	$REPO init -u $GITREPO -b $BRANCH -m $1.xml &&
+    mv .repo/manifest.xml .repo/manifest.xml.original &&
+    sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
 	$REPO sync $sync_flags
 	ret=$?
 	if [ "$GITREPO" = "$GIT_TEMP_REPO" ]; then
