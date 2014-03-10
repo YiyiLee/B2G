@@ -32,15 +32,7 @@ case `uname` in
 	exit -1
 esac
 
-case "$1" in
-sp*)
-	echo "Spreadtrum device detected. Using spreadtrum repo for b2g-manifest"
-	GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
-	;;
-
-*)  GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
-	;;
-esac
+GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
 BRANCH=${BRANCH:-master}
 
 while [ $# -ge 1 ]; do
@@ -66,6 +58,15 @@ while [ $# -ge 1 ]; do
 		;;
 	esac
 done
+
+case "$1" in
+sp*)
+	echo "Spreadtrum device detected. Using spreadtrum repo for b2g-manifest"
+	GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
+	;;
+*)  GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
+	;;
+esac
 
 GIT_TEMP_REPO="tmp_manifest_repo"
 if [ -n "$2" ]; then
