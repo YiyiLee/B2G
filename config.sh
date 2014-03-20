@@ -130,6 +130,11 @@ case "$1" in
 	repo_sync $1
 	;;
 
+"flame")
+	echo PRODUCT_NAME=$1 >> .tmp-config &&
+	repo_sync $1
+	;;
+
 "fugu")
 	echo DEVICE=fugu >> .tmp-config &&
 	echo LUNCH=fugu-eng >> .tmp-config &&
@@ -139,7 +144,7 @@ case "$1" in
 	;;
 
 "tarako")
-	echo DEVICE=tarako >> .tmp-config &&
+	echo DEVICE=sp6821a_gonk >> .tmp-config &&
 	echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
 	repo_sync $1
 	;;
@@ -246,6 +251,7 @@ case "$1" in
 	echo - sp7710gaplus === Dual SIM, v1.3 and master
 	echo - pandaboard
 	echo - flatfish
+	echo - flame
 	echo - emulator
 	echo - emulator-jb
 	echo - emulator-kk

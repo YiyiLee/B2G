@@ -316,7 +316,7 @@ case "$PROJECT" in
 esac
 
 case "$DEVICE" in
-"leo"|"hamachi"|"helix"|"fugu"|"tarako")
+"leo"|"hamachi"|"helix"|"fugu"|"sp6821a_gonk")
 	if $FULLFLASH; then
 		flash_fastboot nounlock $PROJECT
 		exit $?
@@ -333,7 +333,11 @@ case "$DEVICE" in
 	exit $?
 	;;
 
-"otoro"|"unagi"|"keon"|"peak"|"inari"|"sp8810ea"|"sp7710"*|"wasabi"|"sp6821"*|"flatfish")
+"otoro"|"unagi"|"keon"|"peak"|"inari"|"sp8810ea"|"wasabi"|"flatfish")
+	flash_fastboot nounlock $PROJECT
+	;;
+
+"sp7710"*|"sp6821"*)
 	flash_fastboot nounlock $PROJECT
 	;;
 
