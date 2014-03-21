@@ -184,7 +184,7 @@ case "$1" in
 	echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
 	echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
 	case "$BRANCH" in
-		"v1.3"*)
+	"v1.3"*)
 		echo DEVICE_NAME=sp7710gaplus_gonk4.0 >> .tmp-config
 		BRANCH=sprd repo_sync sp7710ga_gonk4.0_v1.3
 		;;
