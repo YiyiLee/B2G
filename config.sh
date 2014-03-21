@@ -199,6 +199,21 @@ case "$1" in
 	esac
 	;;
 
+"sp7715ga")
+	echo DEVICE=scx15_sp7715ga >> .tmp-config &&
+	echo LUNCH=scx15_sp7715gaplus-userdebug >> .tmp-config &&
+	case "$BRANCH" in
+	"v1.4")
+		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config
+		BRANCH=sprd repo_sync sp7715ga_gonk4.4
+		;;
+	*)
+		echo "Branch $BRANCH not supported for device $1"
+		exit 1
+		;;
+	esac
+	;;
+
 "pandaboard")
 	echo DEVICE=panda >> .tmp-config &&
 	repo_sync $1
@@ -249,6 +264,7 @@ case "$1" in
 	echo - sprd-bootstrap = Bootstrap sprd devices from non-Chinese sources
 	echo - sp6821a ======== 128M RAM, v1.3 and master -- Use branch v1.3 for now!
 	echo - sp7710gaplus === Dual SIM, v1.3 and master
+	echo - sp7715ga ======= Dual SIM, v1.4
 	echo - pandaboard
 	echo - flatfish
 	echo - flame

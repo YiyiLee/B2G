@@ -337,7 +337,7 @@ case "$DEVICE" in
 	flash_fastboot nounlock $PROJECT
 	;;
 
-"sp7710"*|"sp6821"*)
+"sp77"*|"scx15_sp77"*|"sp6821"*)
 	flash_fastboot nounlock $PROJECT
 	;;
 
