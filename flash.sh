@@ -52,6 +52,10 @@ fastboot_flash_image()
 	if [ "$DEVICE" == "flatfish" ] && [ "$PARTITION" == "userdata" ]; then
 		PARTITION="data"
 	fi
+    if [ "$DEVICE" == "scx15_sp7715ga" ] && [ "$PARTITION" != "boot" ]; then
+        # Changing value of $1, see http://stackoverflow.com/questions/4827690/change-a-command-line-argument-bash
+        set -- "${PARTITION}_b256k_p4k" "${@:2}"
+    fi
 	imgpath="out/target/product/$DEVICE/$1.img"
 	out="$(run_fastboot flash "$PARTITION" "$imgpath" 2>&1)"
 	rv="$?"
