@@ -140,6 +140,12 @@ flash_fastboot()
 				return $?
 			fi
 		fi
+		case "$DEVICE" in
+		"scx15_sp77"*)
+			fastboot_flash_image cache &&
+			fastboot_flash_image prodnv
+			;;
+		esac
 		fastboot_flash_image userdata &&
 		([ ! -e out/target/product/$DEVICE/boot.img ] ||
 		fastboot_flash_image boot) &&
