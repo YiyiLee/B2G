@@ -11,6 +11,7 @@ export GAIA_DEBUG &&
 export GECKO_OBJDIR &&
 export B2G_NOOPT &&
 export B2G_DEBUG &&
+export B2G_PROFILING &&
 export MOZ_CHROME_MULTILOCALE &&
 export L10NBASEDIR &&
 export MOZ_B2G_DSDS &&

@@ -32,7 +32,8 @@ case `uname` in
 	exit -1
 esac
 
-BRANCH=${BRANCH:-master}
+GITREPO=${GITREPO:-"git://github.com/jld/b2g-manifest"}
+BRANCH=${BRANCH:-profiling}
 
 while [ $# -ge 1 ]; do
 	case $1 in
