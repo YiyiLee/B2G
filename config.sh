@@ -68,6 +68,19 @@ sp*)
 	;;
 esac
 
+
+use_local_manifest() {
+	GITREPO=$GIT_TEMP_REPO
+	rm -rf $GITREPO &&
+	git init $GITREPO &&
+	cp $2 $GITREPO/$1.xml &&
+	cd $GITREPO &&
+	git add $1.xml &&
+	git commit -m "manifest" &&
+	git branch -m $BRANCH &&
+	cd ..
+}
+
 GIT_TEMP_REPO="tmp_manifest_repo"
 if [ -n "$2" ]; then
 	GITREPO=$GIT_TEMP_REPO
@@ -192,6 +205,11 @@ case "$1" in
 	"master")
 		echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
 		BRANCH=sprd repo_sync sp7710ga_gonk4.0_master
+		;;
+	"profiling")
+		echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
+		use_local_manifest "sp7710ga_gonk4.0_master" "profiling_manifests/sp7710ga_gonk4.0_master.xml"
+		repo_sync sp7710ga_gonk4.0_master
 		;;
 	*)
 		echo "Branch $BRANCH not supported for device $1"
