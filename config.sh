@@ -212,6 +212,7 @@ case "$1" in
 		exit 1
 		;;
 	esac
+	;;
 
 "dolphin")
 	echo DEVICE=scx15_sp7715ga >> .tmp-config &&
