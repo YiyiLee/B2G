@@ -9,7 +9,7 @@ repo_sync() {
 		INTENDED_BRANCH="$BRANCH"
 		BRANCH=sprd
 	fi
-	$REPO init -u $GITREPO -b $BRANCH -m $1.xml &&
+	$REPO init -u $GITREPO -b $BRANCH -m $1.xml $REPO_INIT_FLAGS &&
 	mv .repo/manifest.xml .repo/manifest.xml.original &&
 	sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
 	if [ "$INTENDED_BRANCH" = "3gvc" ]; then
@@ -20,7 +20,7 @@ repo_sync() {
 		mv .repo/manifest.xml .repo/manifest.xml.temp &&
 		sed -e "s/name=\"gecko\" remote=\"mozillaorg\" revision=\".*\"/name=\"gecko-dev-3gvc\" remote=\"comoyo\" revision=\"v1.4\"/g" .repo/manifest.xml.temp > .repo/manifest.xml
 	fi &&
-	$REPO sync $sync_flags
+	$REPO sync $sync_flags $REPO_SYNC_FLAGS
 	ret=$?
 	if [ "$GITREPO" = "$GIT_TEMP_REPO" ]; then
 		rm -rf $GIT_TEMP_REPO
@@ -157,7 +157,7 @@ case "$1" in
 
 "tarako")
 	echo DEVICE=sp6821a_gonk >> .tmp-config &&
-	echo LUNCH=sp6821a_gonk-userdebug >> .tmp-config &&
+	echo PRODUCT_NAME=sp6821a_gonk >> .tmp-config &&
 	repo_sync $1
 	;;
 
