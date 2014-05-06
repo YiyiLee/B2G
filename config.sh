@@ -5,9 +5,21 @@ sync_flags=""
 
 repo_sync() {
 	rm -rf .repo/manifest* &&
+	if [ "$BRANCH" = "3gvc" ]; then
+		INTENDED_BRANCH="$BRANCH"
+		BRANCH=sprd
+	fi
 	$REPO init -u $GITREPO -b $BRANCH -m $1.xml &&
 	mv .repo/manifest.xml .repo/manifest.xml.original &&
 	sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
+	if [ "$INTENDED_BRANCH" = "3gvc" ]; then
+		mv .repo/manifest.xml .repo/manifest.xml.temp &&
+		sed -e "s/<manifest>/<manifest><remote name=\"comoyo\" fetch=\"ssh:\/\/git@github.com\/comoyo\/\" \/>/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
+		mv .repo/manifest.xml .repo/manifest.xml.temp &&
+		sed -e "s/name=\"gaia\" remote=\"mozillaorg\" revision=\".*\"/name=\"gaia-3gvc\" remote=\"comoyo\" revision=\"v1.4\"/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
+		mv .repo/manifest.xml .repo/manifest.xml.temp &&
+		sed -e "s/name=\"gecko\" remote=\"mozillaorg\" revision=\".*\"/name=\"gecko-dev-3gvc\" remote=\"comoyo\" revision=\"v1.4\"/g" .repo/manifest.xml.temp > .repo/manifest.xml
+	fi &&
 	$REPO sync $sync_flags
 	ret=$?
 	if [ "$GITREPO" = "$GIT_TEMP_REPO" ]; then
@@ -206,6 +218,10 @@ case "$1" in
 	"v1.4")
 		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config
 		BRANCH=sprd repo_sync sp7715ga_gonk4.4
+		;;
+	"3gvc")
+		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config
+		BRANCH=3gvc repo_sync sp7715ga_gonk4.4
 		;;
 	*)
 		echo "Branch $BRANCH not supported for device $1"
