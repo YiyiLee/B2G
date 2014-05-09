@@ -5,10 +5,6 @@ sync_flags=""
 
 repo_sync() {
 	rm -rf .repo/manifest* &&
-	if [ "$BRANCH" = "3gvc" ]; then
-		INTENDED_BRANCH="$BRANCH"
-		BRANCH=sprd
-	fi
 	$REPO init -u $GITREPO -b $BRANCH -m $1.xml $REPO_INIT_FLAGS &&
 	mv .repo/manifest.xml .repo/manifest.xml.original &&
 	sed -e "s/http:\/\/sprdsource.spreadtrum.com:8085/http:\/\/sprd-tunnel.skunk-works.no:8022/g" .repo/manifest.xml.original > .repo/manifest.xml &&
@@ -82,6 +78,18 @@ sp*)
 	GITREPO=${GITREPO:-"git://github.com/sprd-ffos/b2g-manifest"}
 	;;
 *)  GITREPO=${GITREPO:-"git://github.com/mozilla-b2g/b2g-manifest"}
+	;;
+esac
+
+INTENDED_BRANCH="$BRANCH"
+case "$INTENDED_BRANCH" in
+"3gvc")
+	echo "3gvc branch detected. Using v1.4 branch as template. ##### No v1.3t support here yet! #####"
+	BRANCH=v1.4
+	;;
+"ads")
+	echo "ads branch detected. Using v1.4 branch as template."
+	BRANCH=v1.4
 	;;
 esac
 
