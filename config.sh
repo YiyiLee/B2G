@@ -16,9 +16,15 @@ repo_sync() {
 		mv .repo/manifest.xml .repo/manifest.xml.temp &&
 		sed -e "s/<manifest>/<manifest><remote name=\"comoyo\" fetch=\"ssh:\/\/git@github.com\/comoyo\/\" \/>/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
 		mv .repo/manifest.xml .repo/manifest.xml.temp &&
-		sed -e "s/name=\"gaia\" remote=\"mozillaorg\" revision=\".*\"/name=\"gaia-3gvc\" remote=\"comoyo\" revision=\"v1.4\"/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
+		sed -e "s/<project.*path=['\"]gaia['\"].*\/>/<project name=\"gaia-3gvc\" path=\"gaia\" remote=\"comoyo\" revision=\"v1.4\"\/>/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
 		mv .repo/manifest.xml .repo/manifest.xml.temp &&
-		sed -e "s/name=\"gecko\" remote=\"mozillaorg\" revision=\".*\"/name=\"gecko-dev-3gvc\" remote=\"comoyo\" revision=\"v1.4\"/g" .repo/manifest.xml.temp > .repo/manifest.xml
+		sed -e "s/<project.*path=['\"]gecko['\"].*\/>/<project name=\"gecko-dev-3gvc\" path=\"gecko\" remote=\"comoyo\" revision=\"v1.4\"\/>/g" .repo/manifest.xml.temp > .repo/manifest.xml
+	fi &&
+	if [ "$INTENDED_BRANCH" = "ads" ]; then
+		mv .repo/manifest.xml .repo/manifest.xml.temp &&
+		sed -e "s/<manifest>/<manifest><remote name=\"comoyo\" fetch=\"ssh:\/\/git@github.com\/comoyo\/\" \/>/g" .repo/manifest.xml.temp > .repo/manifest.xml &&
+		mv .repo/manifest.xml .repo/manifest.xml.temp &&
+		sed -e "s/<project.*path=['\"]gaia['\"].*\/>/<project name=\"gaia-ads\" path=\"gaia\" remote=\"comoyo\" revision=\"v1.4-ads\"\/>/g" .repo/manifest.xml.temp > .repo/manifest.xml
 	fi &&
 	$REPO sync $sync_flags $REPO_SYNC_FLAGS
 	ret=$?
