@@ -227,7 +227,7 @@ case "$1" in
 
 "sp7715ga")
 	echo DEVICE=scx15_sp7715ga >> .tmp-config &&
-	echo LUNCH=scx15_sp7715gaplus-userdebug >> .tmp-config &&
+	echo PRODUCT_NAME=scx15_sp7715gaplus >> .tmp-config &&
 	case "$BRANCH" in
 	"v1.4")
 		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config
