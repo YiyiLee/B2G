@@ -8,7 +8,7 @@
   <remote name="mozillaorg" fetch="https://git.mozilla.org/releases" />
   <remote name="sprd-b2g" fetch="http://sprdsource.spreadtrum.com:8085/b2g" />
   <remote name="sprd-aosp" fetch="http://sprdsource.spreadtrum.com:8085/b2g/android" />
-  <remote name="jld" fetch="git://github.com/jld/"/>
+  <remote name="comoyo" fetch="git://github.com/comoyo/"/>
   <remote fetch="git://android.git.linaro.org/" name="linaro"/>
   <default revision="refs/tags/android-4.0.4_r2.1" remote="aosp" sync-j="4" />
 
@@ -19,12 +19,11 @@
   <project path="dalvik" name="fake-dalvik" remote="b2g" revision="master" />
   <project path="gaia" name="gaia.git" remote="mozillaorg" revision="master" />
   <project path="gecko" name="gecko.git" remote="mozillaorg" revision="master" />
-  <project path="gonk-misc" name="gonk-misc" remote="jld" revision="87d91fb5fb7654758940723b9f1173052bc4f4a5" />
+  <project path="gonk-misc" name="gonk-misc" remote="comoyo" revision="perf" />
   <project path="rilproxy" name="rilproxy" remote="b2g" revision="master" />
   <project path="librecovery" name="librecovery" remote="b2g" revision="master" />
   <project path="external/moztt" name="moztt" remote="b2g" revision="master" />
-  <project path="patches" name="gonk-patches" remote="jld" revision="1663963306898258f74213b87fe5bb73aa4d3a79" upstream="frame-pointers" />
-  <project path="prebuilt/alt-toolchain" name="b2g-toolchain-prebuilt" remote="jld" revision="1b56ba020af353cc447ffe41354f1a5a3766f62a" />
+  <project path="prebuilt/alt-toolchain" name="b2g-toolchain-prebuilt" remote="comoyo" revision="gcc-4.4.3" />
   <project path="external/valgrind" name="valgrind" remote="b2g" revision="fxos" />
   <project path="external/VEX" name="vex" remote="b2g" revision="fxos" />
   <project path="external/apitrace" name="apitrace" remote="apitrace" revision="master" />
