@@ -223,8 +223,13 @@ case "$1" in
 	echo LUNCH=scx15_sp7715gaplus-userdebug >> .tmp-config &&
 	case "$BRANCH" in
 	"v1.4")
-		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config
+		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config &&
 		BRANCH=sprd repo_sync sp7715ga_gonk4.4
+		;;
+	"profiling")
+		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config &&
+		use_local_manifest "sp7715ga_gonk4.4" "profiling_manifests/sp7715ga_gonk4.4" &&
+		repo_sync sp7715ga_gonk4.4
 		;;
 	*)
 		echo "Branch $BRANCH not supported for device $1"
