@@ -213,7 +213,7 @@ case "$1" in
 		;;
 	"profiling")
 		echo DEVICE_NAME=sp7710gaplus_gonk4.0_master >> .tmp-config
-		use_local_manifest "sp7710ga_gonk4.0_master" "profiling_manifests/sp7710ga_gonk4.0_master.xml"
+		use_local_manifest "sp7710ga_gonk4.0_master" "profiling/manifests/sp7710ga_gonk4.0_master.xml"
 		repo_sync sp7710ga_gonk4.0_master
 		;;
 	*)
@@ -233,7 +233,7 @@ case "$1" in
 		;;
 	"profiling")
 		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config &&
-		use_local_manifest "sp7715ga_gonk4.4" "profiling_manifests/sp7715ga_gonk4.4.xml" &&
+		use_local_manifest "sp7715ga_gonk4.4" "profiling/manifests/sp7715ga_gonk4.4.xml" &&
 		repo_sync sp7715ga_gonk4.4
 		;;
 	*)
@@ -318,8 +318,8 @@ if [ $? -ne 0 ]; then
 	exit -1
 fi
 
-if [ -e "profiling_kernelconfigs/$1" -a -e "kernel/arch/arm/configs" ]; then
-	cp "profiling_kernelconfigs/$1/"* "kernel/arch/arm/configs/"
+if [ -e "profiling/kernelconfigs/$1" -a -e "kernel/arch/arm/configs" ]; then
+	cp "profiling/kernelconfigs/$1/"* "kernel/arch/arm/configs/"
 fi
 
 mv .tmp-config .config

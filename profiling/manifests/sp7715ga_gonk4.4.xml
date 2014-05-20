@@ -16,7 +16,7 @@
   <default revision="sprdb2g_gonk4.4" remote="sprd-aosp" />
 
   <!-- B2G/Gonk specific things -->
-  <project path="build" name="platform/build" >
+  <project path="build" name="platform_build" remote="b2g" revision="b2g-4.4.2_r1">
     <copyfile src="core/root.mk" dest="Makefile" />
   </project>
   <project path="dalvik" name="fake-libdvm" remote="b2g" revision="v1.4"/>
