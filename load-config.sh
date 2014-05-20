@@ -35,7 +35,7 @@ if [ "${B2G_PROFILING:-0}" != 0 ]; then
     esac
     # FIXME: all this needs to be conditional for arm targets
     if [ -z "$TARGET_TOOLS_PREFIX" ]; then
-	TARGET_TOOLS_PREFIX=${B2G_DIR?}/prebuilt/alt-toolchain/toolchain-4.4.3/${HOST_TRIPLE}/bin/arm-linux-androideabi-
+	TARGET_TOOLS_PREFIX=${B2G_DIR?}/prebuilt/alt-toolchain/toolchain/${HOST_TRIPLE}/bin/arm-linux-androideabi-
     fi
     export TARGET_TOOLS_PREFIX
     profiling_cflags="-mapcs-frame -mthumb2-fake-apcs-frame -DHAVE_APCS_FRAME"
