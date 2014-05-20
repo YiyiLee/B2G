@@ -1,0 +1,313 @@
+From c2be0a79a4f00c4c06c8aacc1e49ef19c6c380eb Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Fri, 25 Apr 2014 09:15:03 +0200
+Subject: [PATCH] Comment out spammy spreadtrum log messages
+
+---
+ common/apps/mplayer/mplayer.cpp                                |  2 +-
+ common/libs/gralloc/alloc_device.cpp                           |  8 ++++----
+ common/libs/gralloc/gralloc_module.cpp                         |  4 ++--
+ common/libs/libcamera/SprdCameraHardwareInterface.cpp          |  2 +-
+ common/libs/libcamera/SprdOEMCamera.cpp                        |  2 +-
+ common/libs/libcamera/jpeg_fw_8810/src/jpegdec_api.c           |  2 +-
+ common/libs/libcamera/jpeg_fw_8810/src/jpegenc_api.c           |  2 +-
+ common/libs/libcamera/jpeg_fw_tiger/src/jpegdec_api.c          |  2 +-
+ common/libs/libcamera/sc8810/SprdCameraHardwareInterface.cpp   | 10 +++++-----
+ common/libs/libcamera/sc8810/SprdOEMCamera.cpp                 |  4 ++--
+ .../libs/libcamera/sc8825/src/SprdCameraHardwareInterface.cpp  |  2 +-
+ .../libs/libcamera/sc8830/src/SprdCameraHardwareInterface.cpp  |  2 +-
+ .../libs/libcamera/tiger/src/SprdCameraHardwareInterface.cpp   |  2 +-
+ common/tools/lookat/lookat.c                                   |  2 +-
+ .../com_broadcom_bt_service_fm_FmReceiverService.cpp           |  2 +-
+ partner/ublox/gps/ubx_log.h                                    |  2 +-
+ 16 files changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/common/apps/mplayer/mplayer.cpp b/common/apps/mplayer/mplayer.cpp
+index ce7919c..dcb039a 100644
+--- a/common/apps/mplayer/mplayer.cpp
++++ b/common/apps/mplayer/mplayer.cpp
+@@ -1,4 +1,4 @@
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "mplayer"
+ #include <media/mediaplayer.h>
+ #include <media/MediaPlayerInterface.h>
+diff --git a/common/libs/gralloc/alloc_device.cpp b/common/libs/gralloc/alloc_device.cpp
+index 2423924..2d0d253 100644
+--- a/common/libs/gralloc/alloc_device.cpp
++++ b/common/libs/gralloc/alloc_device.cpp
+@@ -428,7 +428,7 @@ static int gralloc_alloc_framebuffer(alloc_device_t* dev, size_t size, int usage
+ 
+ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format, int usage, buffer_handle_t* pHandle, int* pStride)
+ {
+-	ALOGD("%s w:%d, h:%d, format:%d usage:%d start",__FUNCTION__,w,h,format,usage);
++	//ALOGD("%s w:%d, h:%d, format:%d usage:%d start",__FUNCTION__,w,h,format,usage);
+ 	if (!pHandle || !pStride)
+ 	{
+ 		return -EINVAL;
+@@ -539,7 +539,7 @@ AllocNormalBuffer:
+ 		}
+ 	}
+ 
+-	ALOGD("%s handle:0x%x end",__FUNCTION__,(unsigned int)*pHandle);
++	//ALOGD("%s handle:0x%x end",__FUNCTION__,(unsigned int)*pHandle);
+ 	if (err < 0)
+ 	{
+ 		return err;
+@@ -551,7 +551,7 @@ AllocNormalBuffer:
+ 
+ static int alloc_device_free(alloc_device_t* dev, buffer_handle_t handle)
+ {
+-	ALOGD("%s buffer_handle_t:0x%x start",__FUNCTION__,(unsigned int)handle);
++	//ALOGD("%s buffer_handle_t:0x%x start",__FUNCTION__,(unsigned int)handle);
+ 	if (private_handle_t::validate(handle) < 0)
+ 	{
+ 		return -EINVAL;
+@@ -626,7 +626,7 @@ static int alloc_device_free(alloc_device_t* dev, buffer_handle_t handle)
+ 
+ 	delete hnd;
+ 
+-	ALOGD("%s end",__FUNCTION__);
++	//ALOGD("%s end",__FUNCTION__);
+ 	return 0;
+ }
+ 
+diff --git a/common/libs/gralloc/gralloc_module.cpp b/common/libs/gralloc/gralloc_module.cpp
+index 199ab4c..8a65e99 100644
+--- a/common/libs/gralloc/gralloc_module.cpp
++++ b/common/libs/gralloc/gralloc_module.cpp
+@@ -77,7 +77,7 @@ static int gralloc_register_buffer(gralloc_module_t const* module, buffer_handle
+ 	private_handle_t* hnd = (private_handle_t*)handle;
+ 	if (hnd->pid == getpid())
+ 	{
+-		AERR("Unable to register handle 0x%x coming from different process: %d", (unsigned int)hnd, hnd->pid );
++		//AERR("Unable to register handle 0x%x coming from different process: %d", (unsigned int)hnd, hnd->pid );
+ 		return 0;
+ 	}
+ 
+@@ -272,7 +272,7 @@ static int gralloc_unregister_buffer(gralloc_module_t const* module, buffer_hand
+ 	}
+ 	else
+ 	{
+-		AERR( "Trying to unregister buffer 0x%x from process %d that was not created in current process: %d", (unsigned int)hnd, hnd->pid, getpid());
++		//AERR( "Trying to unregister buffer 0x%x from process %d that was not created in current process: %d", (unsigned int)hnd, hnd->pid, getpid());
+ 	}
+ 
+ 	return 0;
+diff --git a/common/libs/libcamera/SprdCameraHardwareInterface.cpp b/common/libs/libcamera/SprdCameraHardwareInterface.cpp
+index f5e4046..1a755fc 100644
+--- a/common/libs/libcamera/SprdCameraHardwareInterface.cpp
++++ b/common/libs/libcamera/SprdCameraHardwareInterface.cpp
+@@ -16,7 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraHardware"
+ #include <utils/Log.h>
+ //#include <utils/threads.h>
+diff --git a/common/libs/libcamera/SprdOEMCamera.cpp b/common/libs/libcamera/SprdOEMCamera.cpp
+index 74ae7bf..dbbff44 100644
+--- a/common/libs/libcamera/SprdOEMCamera.cpp
++++ b/common/libs/libcamera/SprdOEMCamera.cpp
+@@ -15,7 +15,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  */
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraOEM"
+ //#include <linux/delay.h>
+ #include <stdlib.h>
+diff --git a/common/libs/libcamera/jpeg_fw_8810/src/jpegdec_api.c b/common/libs/libcamera/jpeg_fw_8810/src/jpegdec_api.c
+index 02cd298..fcce087 100644
+--- a/common/libs/libcamera/jpeg_fw_8810/src/jpegdec_api.c
++++ b/common/libs/libcamera/jpeg_fw_8810/src/jpegdec_api.c
+@@ -32,7 +32,7 @@
+ 		
+ //#if defined(JPEG_DEC)
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ 
+ #include "sprd_vsp.h"
+ 
+diff --git a/common/libs/libcamera/jpeg_fw_8810/src/jpegenc_api.c b/common/libs/libcamera/jpeg_fw_8810/src/jpegenc_api.c
+index 7620d0c..b70c1dd 100644
+--- a/common/libs/libcamera/jpeg_fw_8810/src/jpegenc_api.c
++++ b/common/libs/libcamera/jpeg_fw_8810/src/jpegenc_api.c
+@@ -33,7 +33,7 @@
+ 		
+ #if defined(JPEG_ENC)
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #include "sprd_vsp.h"
+ 
+ #define SPRD_VSP_DRIVER "/dev/sprd_vsp"
+diff --git a/common/libs/libcamera/jpeg_fw_tiger/src/jpegdec_api.c b/common/libs/libcamera/jpeg_fw_tiger/src/jpegdec_api.c
+index 37c2e25..4e75b7d 100644
+--- a/common/libs/libcamera/jpeg_fw_tiger/src/jpegdec_api.c
++++ b/common/libs/libcamera/jpeg_fw_tiger/src/jpegdec_api.c
+@@ -32,7 +32,7 @@
+ 		
+ //#if defined(JPEG_DEC)
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ 
+ #include "sprd_vsp.h"
+ 
+diff --git a/common/libs/libcamera/sc8810/SprdCameraHardwareInterface.cpp b/common/libs/libcamera/sc8810/SprdCameraHardwareInterface.cpp
+index 59ba481..8e06676 100644
+--- a/common/libs/libcamera/sc8810/SprdCameraHardwareInterface.cpp
++++ b/common/libs/libcamera/sc8810/SprdCameraHardwareInterface.cpp
+@@ -16,7 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraHardware"
+ #include <utils/Log.h>
+ #include <utils/String16.h>
+@@ -1622,7 +1622,7 @@ if(PREVIEW_WINDOW_SET_OK == mSettingPreviewWindowState)
+                         ALOGE("Could not dequeue gralloc buffer!\n");
+                         goto callbacks;
+                 }
+-                ALOGI("stride: %d, width: %d, height: %d, frame->buf_id: %d.", stride, width, height, frame->buf_id);
++                //ALOGI("stride: %d, width: %d, height: %d, frame->buf_id: %d.", stride, width, height, frame->buf_id);
+ 
+                 void *vaddr;
+                 if (!mGrallocHal->lock(mGrallocHal,
+@@ -1636,7 +1636,7 @@ if(PREVIEW_WINDOW_SET_OK == mSettingPreviewWindowState)
+                                 is_cancel_buffer = true;
+                                 goto preview_grallochal_unlock;
+ 			} else{
+-				ALOGI("OK to get gralloc buffer. vaddr: 0x%x, frame_addr: 0x%x, frame->buf_Virt_Addr: 0x%x.", (uint32_t)vaddr, (uint32_t)frame_addr, (uint32_t)frame->buf_Virt_Addr);
++				//ALOGI("OK to get gralloc buffer. vaddr: 0x%x, frame_addr: 0x%x, frame->buf_Virt_Addr: 0x%x.", (uint32_t)vaddr, (uint32_t)frame_addr, (uint32_t)frame->buf_Virt_Addr);
+ 			}
+ 
+ 			{
+@@ -1656,7 +1656,7 @@ if(PREVIEW_WINDOW_SET_OK == mSettingPreviewWindowState)
+ 				        goto preview_grallochal_unlock;
+ 				}
+ #else
+-				ALOGE("receivePreviewFrame cp buf_addr=0x%x,phy_addr=0x%x", \
++				//ALOGE("receivePreviewFrame cp buf_addr=0x%x,phy_addr=0x%x", \
+ 					  frame->buffer_phy_addr, (uint32_t)vaddr);
+ 				if((uint32_t)stride != width){
+ 					dst_addr = vaddr;
+@@ -1702,7 +1702,7 @@ preview_grallochal_unlock:
+ 	                        goto callbacks;
+ 	                }
+ 	                else{
+-				ALOGI("OK to enqueue gralloc buffer!");
++				//ALOGI("OK to enqueue gralloc buffer!");
+ 	                }
+ 	        }
+         }
+diff --git a/common/libs/libcamera/sc8810/SprdOEMCamera.cpp b/common/libs/libcamera/sc8810/SprdOEMCamera.cpp
+index 4f18c32..fc281e3 100644
+--- a/common/libs/libcamera/sc8810/SprdOEMCamera.cpp
++++ b/common/libs/libcamera/sc8810/SprdOEMCamera.cpp
+@@ -15,7 +15,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  */
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraOEM"
+ //#include <linux/delay.h>
+ #include <stdlib.h>
+@@ -1369,7 +1369,7 @@ camera_ret_code_type camera_preview_qbuf(uint32_t index)
+ 
+ 	if((0 == g_preview_stop) && (0 == g_stop_preview_flag))
+ 	{
+-		ALOGE("SPRD OEM:VIDIOC_QBUF in camera_release_frame.buff_index: %d", index);
++		//ALOGE("SPRD OEM:VIDIOC_QBUF in camera_release_frame.buff_index: %d", index);
+ 		CLEAR (buf);
+ 		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 		buf.memory = V4L2_MEMORY_USERPTR;
+diff --git a/common/libs/libcamera/sc8825/src/SprdCameraHardwareInterface.cpp b/common/libs/libcamera/sc8825/src/SprdCameraHardwareInterface.cpp
+index d809933..1fb492f 100644
+--- a/common/libs/libcamera/sc8825/src/SprdCameraHardwareInterface.cpp
++++ b/common/libs/libcamera/sc8825/src/SprdCameraHardwareInterface.cpp
+@@ -16,7 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraHardware"
+ #include <utils/Log.h>
+ #include <utils/String16.h>
+diff --git a/common/libs/libcamera/sc8830/src/SprdCameraHardwareInterface.cpp b/common/libs/libcamera/sc8830/src/SprdCameraHardwareInterface.cpp
+index 623ee41..1302099 100644
+--- a/common/libs/libcamera/sc8830/src/SprdCameraHardwareInterface.cpp
++++ b/common/libs/libcamera/sc8830/src/SprdCameraHardwareInterface.cpp
+@@ -14,7 +14,7 @@
+  * GNU General Public License for more details.
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraHardware"
+ 
+ #include <utils/Log.h>
+diff --git a/common/libs/libcamera/tiger/src/SprdCameraHardwareInterface.cpp b/common/libs/libcamera/tiger/src/SprdCameraHardwareInterface.cpp
+index 1bcf1c7..50ba86d 100644
+--- a/common/libs/libcamera/tiger/src/SprdCameraHardwareInterface.cpp
++++ b/common/libs/libcamera/tiger/src/SprdCameraHardwareInterface.cpp
+@@ -16,7 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "SprdCameraHardware"
+ #include <utils/Log.h>
+ #include <utils/String16.h>
+diff --git a/common/tools/lookat/lookat.c b/common/tools/lookat/lookat.c
+index a802469..f2ee66e 100644
+--- a/common/tools/lookat/lookat.c
++++ b/common/tools/lookat/lookat.c
+@@ -15,7 +15,7 @@
+  *          add sc7710g /sc8830(shark) a-die regs access
+  */
+ 
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #define LOG_TAG "lookat"
+ 
+ #include <stdio.h>
+diff --git a/partner/brcm/libfm-brcm/com_broadcom_bt_service_fm_FmReceiverService.cpp b/partner/brcm/libfm-brcm/com_broadcom_bt_service_fm_FmReceiverService.cpp
+index 0270f88..171aa26 100644
+--- a/partner/brcm/libfm-brcm/com_broadcom_bt_service_fm_FmReceiverService.cpp
++++ b/partner/brcm/libfm-brcm/com_broadcom_bt_service_fm_FmReceiverService.cpp
+@@ -43,7 +43,7 @@
+ */
+ 
+ #define LOG_TAG "com_broadcom_bt_service_fm_FmReceiverService.cpp"
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ 
+ #include "fm_cfg.h"
+ 
+diff --git a/partner/ublox/gps/ubx_log.h b/partner/ublox/gps/ubx_log.h
+index a3331fc..616b7ac 100644
+--- a/partner/ublox/gps/ubx_log.h
++++ b/partner/ublox/gps/ubx_log.h
+@@ -29,7 +29,7 @@
+ 
+ 
+ #define LOG_TAG "u-blox"        //!< Tag for logging
+-#define LOG_NDEBUG 0
++//#define LOG_NDEBUG 0
+ #include <cutils/log.h>
+ 
+ #ifdef SUPL_ENABLED 
+-- 
+1.9.0
+

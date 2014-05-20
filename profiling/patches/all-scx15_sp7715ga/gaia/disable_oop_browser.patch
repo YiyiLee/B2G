@@ -1,0 +1,33 @@
+From 680883486cb2ec07f9b8d9cad0653b54bb741be0 Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Wed, 23 Apr 2014 06:20:25 +0200
+Subject: [PATCH] Disable Out-Of-Process for Browser
+
+---
+ apps/browser/js/browser.js | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/apps/browser/js/browser.js b/apps/browser/js/browser.js
+index c82d5a4..09a2cc8 100644
+--- a/apps/browser/js/browser.js
++++ b/apps/browser/js/browser.js
+@@ -1234,7 +1234,7 @@ var Browser = {
+   createTab: function browser_createTab(url, iframe, tab) {
+     if (!iframe) {
+       iframe = document.createElement('iframe');
+-      iframe.setAttribute('mozbrowser', true);
++      iframe.setAttribute('mozbrowser', false);
+       iframe.setAttribute('mozallowfullscreen', true);
+       iframe.classList.add('browser-tab');
+ 
+@@ -1247,7 +1247,7 @@ var Browser = {
+ 
+     iframe.setAttribute('mozasyncpanzoom', 'true');
+     // FIXME: content shouldn't control this directly
+-    iframe.setAttribute('remote', 'true');
++    iframe.setAttribute('remote', 'false');
+ 
+     if (tab) {
+       tab.dom = iframe;
+-- 
+1.9.0
