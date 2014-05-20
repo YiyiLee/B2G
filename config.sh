@@ -146,11 +146,7 @@ case "$1" in
 
 "flame")
 	echo PRODUCT_NAME=$1 >> .tmp-config &&
-	case "$BRANCH" in
-	"profiling")
-		use_local_manifest flame "profiling_manifests/flame.xml"
-		;;
-	esac &&
+	use_local_manifest flame "profiling/manifests/flame.xml" &&
        repo_sync $1
 	;;
 
