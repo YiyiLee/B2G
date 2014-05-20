@@ -57,6 +57,9 @@ unset CDPATH
 if [ -f patches/patch.sh ] ; then
     . patches/patch.sh
 fi &&
+if [ -f profiling/patches/patch.sh ] ; then
+    . profiling/patches/patch.sh
+fi &&
 if [ -f sprd_patch/auto_patch.sh ] ; then
     echo "####### APPLYING SPREADTRUM PATCHES"
     sprd_patch/auto_patch.sh $DEVICE_NAME
