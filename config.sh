@@ -318,6 +318,10 @@ if [ $? -ne 0 ]; then
 	exit -1
 fi
 
+if [ -e "profiling_kernelconfigs/$1" -a -e "kernel/arch/arm/configs" ]; then
+	cp "profiling_kernelconfigs/$1/"* "kernel/arch/arm/configs/"
+fi
+
 mv .tmp-config .config
 
 echo Run \|./build.sh\| to start building
