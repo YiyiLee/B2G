@@ -219,8 +219,19 @@ class PerfRecord:
             self.jsallsyms[pid] = self._read_jsallsyms(pid)
         return self.jsallsyms[pid]
 
+    def ignore_errors_in_read_dump(self, generator):
+        while True:
+            try:
+                yield next(generator)
+            except StopIteration:
+                raise
+            except Exception as e:
+                print ("### Exception in read_dump:")
+                print (e)
+                print ("### IGNORING ###")
+
     def read_dump(self, src):
-        for rec in src:
+        for rec in self.ignore_errors_in_read_dump(src):
             kind = rec['type']
             if kind == 'sample':
                 self.handle_sample(rec)
