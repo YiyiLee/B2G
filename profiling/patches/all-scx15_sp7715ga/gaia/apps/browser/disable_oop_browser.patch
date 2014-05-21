@@ -4,13 +4,13 @@ Date: Wed, 23 Apr 2014 06:20:25 +0200
 Subject: [PATCH] Disable Out-Of-Process for Browser
 
 ---
- apps/browser/js/browser.js | 4 ++--
+ js/browser.js | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/apps/browser/js/browser.js b/apps/browser/js/browser.js
+diff --git a/js/browser.js b/js/browser.js
 index c82d5a4..09a2cc8 100644
---- a/apps/browser/js/browser.js
-+++ b/apps/browser/js/browser.js
+--- a/js/browser.js
++++ b/js/browser.js
 @@ -1234,7 +1234,7 @@ var Browser = {
    createTab: function browser_createTab(url, iframe, tab) {
      if (!iframe) {

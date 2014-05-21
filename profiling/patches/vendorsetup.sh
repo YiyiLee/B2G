@@ -99,13 +99,8 @@ __patch_tree()
                    git branch b2g_autogen_ephemeral_branch && \
                    git checkout b2g_autogen_ephemeral_branch \
                  )
-            else
-               read -p "Project $1 is not managed by git. Modify anyway?  [y/N] "
-               if [[ ${REPLY} != "y" ]]; then
-                  echo "No."
-                  popd > /dev/null
-                  return 1
-               fi
+           else
+               echo "Project $1 is not managed by git. Modifying anyway."
             fi
          }
          apply() {
