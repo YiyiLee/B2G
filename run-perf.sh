@@ -39,7 +39,7 @@ run_target_perf() {
 	read
 	echo 'kill -INT -$perf_pid; wait $perf_pid; exit'
     } | "$ADB" shell
-    "$ADB" pull /cache/perf.data "$perftmp"/
+    "$ADB" pull /data/perf.data "$perftmp"/
 	# Refresh kallsyms if /proc/1 mtime (== boot time) changes.
 	# Note: This may not be right if modules are dynamically loaded.
     proc1_info=$("$ADB" shell ls -ld /proc/1)
@@ -81,16 +81,16 @@ case $1 in
 
     record)
 	shift
-	need_perf=$("$ADB" shell 'test -e /cache/perf; echo $?' | tr -d \\r)
+	need_perf=$("$ADB" shell 'test -e /data/perf; echo $?' | tr -d \\r)
 	if [ "$need_perf" -ne 0 ]; then
-	    "$ADB" push "$target_perf" /cache/perf
+	    "$ADB" push "$target_perf" /data/perf
 	fi
-	run_target_perf 'cd /cache && ./perf record '"$*"
+	run_target_perf 'cd /data && ./perf record '"$*"
 	;;
 
     minirecord)
 	shift
-	run_target_perf 'miniperf-record -o /cache/perf.data '"$*"
+	run_target_perf 'miniperf-record -o /data/perf.data '"$*"
 	;;
 
     sps)
