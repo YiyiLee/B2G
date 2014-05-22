@@ -18,7 +18,7 @@
   <project name="fake-libdvm" path="dalvik" remote="b2g" revision="master"/>
   <project name="gaia" path="gaia" remote="mozillaorg" revision="master"/>
   <project name="gonk-misc" path="gonk-misc" remote="comoyo" revision="perf"/>
-  <project path="prebuilt/alt-toolchain" name="b2g-toolchain-prebuilt" remote="comoyo" revision="gcc-4.6" />
+  <project path="prebuilt/alt-toolchain" name="b2g-toolchain-prebuilt" remote="comoyo" revision="gcc-4.7" />
   <project name="moztt" path="external/moztt" remote="b2g" revision="master"/>
   <project name="apitrace" path="external/apitrace" remote="apitrace" revision="master" />
   <project path="external/valgrind" name="valgrind" remote="b2g" revision="fxos" />
