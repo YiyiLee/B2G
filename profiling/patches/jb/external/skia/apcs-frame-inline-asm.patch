@@ -1,16 +1,19 @@
-commit 2ce542b396552d75cdead0e2934bab4df0198bc4
-Author: Jed Davis <jld@mozilla.com>
-Date:   Mon Mar 18 11:15:49 2013 -0700
+From 3864c2d85ebd3b647ea860db52c0e38e215359bc Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Fri, 23 May 2014 04:41:35 +0200
+Subject: [PATCH] Don't ask GCC to clobber r11 if we're using it as a frame pointer.
 
-    Don't ask GCC to clobber r11 if we're using it as a frame pointer.
+---
+ src/opts/SkBitmapProcState_opts_arm.cpp | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
 diff --git a/src/opts/SkBitmapProcState_opts_arm.cpp b/src/opts/SkBitmapProcState_opts_arm.cpp
-index 1084082..c8a28d8 100644
+index e044ad8..7d5a99a 100644
 --- a/src/opts/SkBitmapProcState_opts_arm.cpp
 +++ b/src/opts/SkBitmapProcState_opts_arm.cpp
-@@ -57,6 +57,9 @@ void SI8_D16_nofilter_DX_arm(const SkBitmapProcState& s,
+@@ -46,6 +46,9 @@ void SI8_D16_nofilter_DX_arm(const SkBitmapProcState& s,
          const uint16_t* SK_RESTRICT xx = (const uint16_t*)(xy + 1);
-         
+ 
          asm volatile (
 +#ifdef HAVE_APCS_FRAME
 +                      "push       {r11}                           \n\t"
@@ -18,7 +21,7 @@ index 1084082..c8a28d8 100644
                        "cmp        %[count8], #0                   \n\t"   // compare loop counter with 0
                        "beq        2f                              \n\t"   // if loop counter == 0, exit
                        "1:                                             \n\t"
-@@ -101,9 +104,15 @@ void SI8_D16_nofilter_DX_arm(const SkBitmapProcState& s,
+@@ -90,9 +93,15 @@ void SI8_D16_nofilter_DX_arm(const SkBitmapProcState& s,
                        "stmia      %[colors]!, {r5, r6, r8, r10}   \n\t"   // store last 8 pixels
                        "bgt        1b                              \n\t"   // loop if counter > 0
                        "2:                                             \n\t"
@@ -33,9 +36,9 @@ index 1084082..c8a28d8 100644
 +                      , "r11"
 +#endif
                        );
-         
+ 
          for (i = (count & 7); i > 0; --i) {
-@@ -143,6 +152,9 @@ void SI8_opaque_D32_nofilter_DX_arm(const SkBitmapProcState& s,
+@@ -132,6 +141,9 @@ void SI8_opaque_D32_nofilter_DX_arm(const SkBitmapProcState& s,
          const uint16_t* xx = (const uint16_t*)(xy + 1);
  
          asm volatile (
@@ -45,7 +48,7 @@ index 1084082..c8a28d8 100644
                        "subs       %[count], %[count], #8          \n\t"   // decrement count by 8, set flags
                        "blt        2f                              \n\t"   // if count < 0, branch to singles
                        "1:                                             \n\t"   // eights loop
-@@ -185,9 +197,15 @@ void SI8_opaque_D32_nofilter_DX_arm(const SkBitmapProcState& s,
+@@ -174,9 +186,15 @@ void SI8_opaque_D32_nofilter_DX_arm(const SkBitmapProcState& s,
                        "str        r6, [%[colors]], #4             \n\t"   // store pixel, update ptr
                        "bne        3b                              \n\t"   // loop if counter != 0
                        "4:                                             \n\t"   // exit
@@ -62,3 +65,6 @@ index 1084082..c8a28d8 100644
                        );
      }
  
+-- 
+1.9.0
+
