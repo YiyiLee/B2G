@@ -93,6 +93,8 @@ flash_fastboot()
 		;;
 	esac
 
+	delete_single_variant_persist
+
 	case $DEVICE in
 	"helix")
 		run_adb reboot oem-1
@@ -175,6 +177,7 @@ flash_heimdall()
 		exit -1
 	fi
 
+	delete_single_variant_persist &&
 	run_adb reboot download && sleep 8
 	if [ $? -ne 0 ]; then
 		echo Couldn\'t reboot into download mode. Hope you\'re already in download mode
@@ -251,6 +254,11 @@ delete_extra_gecko_files_on_device()
 	return 0
 }
 
+delete_single_variant_persist()
+{
+	run_adb shell rm -r /persist/svoperapps > /dev/null
+}
+
 flash_gecko()
 {
 	delete_extra_gecko_files_on_device &&
@@ -262,20 +270,38 @@ flash_gaia()
 {
 	GAIA_MAKE_FLAGS="ADB=\"$ADB\""
 	USER_VARIANTS="user(debug)?"
+	# We need to decide where to push the apps here.
+	# If the VARIANTS is user or userdebug, send them to /system/b2g.
+	# or, we will try to connect the phone and see where Gaia was installed
+	# and try not to push to the wrong place.
 	if [[ "$VARIANT" =~ $USER_VARIANTS ]]; then
 		# Gaia's build takes care of remounting /system for production builds
-		GAIA_MAKE_FLAGS+=" PRODUCTION=1"
-	fi
-	adb wait-for-device
-	if adb shell cat /data/local/webapps/webapps.json | grep -qs '"basePath": "/system' ; then
-		echo -n "In ${bold}production${offbold} mode"
-		export B2G_SYSTEM_APPS=1
-		adb remount
+		echo "Push to /system/b2g ..."
+		GAIA_MAKE_FLAGS+=" GAIA_INSTALL_PARENT=/system/b2g"
 	else
-		echo -n "In ${bold}dev${offbold} mode"
-	fi 
-	make -C gaia install-gaia $GAIA_MAKE_FLAGS
-	return 0
+		echo "Detect GAIA_INSTALL_PARENT ..."
+		# This part has been re-implemented in Gaia build script (bug 915484),
+		# XXX: Remove this once we no longer support old Gaia branches.
+		# Install to /system/b2g if webapps.json does not exist, or
+		# points any installed app to /system/b2g.
+		run_adb wait-for-device
+		if run_adb shell 'cat /data/local/webapps/webapps.json || echo \"basePath\": \"/system\"' | grep -qs '"basePath": "/system' ; then
+			echo "Push to /system/b2g ..."
+			GAIA_MAKE_FLAGS+=" GAIA_INSTALL_PARENT=/system/b2g"
+		else
+			echo "Push to /data/local ..."
+			GAIA_MAKE_FLAGS+=" GAIA_INSTALL_PARENT=/data/local"
+		fi
+	fi
+	make -C gaia push $GAIA_MAKE_FLAGS
+
+	# For older Gaia without |push| target,
+	# run the original |install-gaia| target.
+	# XXX: Remove this once we no longer support old Gaia branches.
+	if [[ $? -ne 0 ]]; then
+		make -C gaia install-gaia $GAIA_MAKE_FLAGS
+	fi
+	return $?
 }
 
 while [ $# -gt 0 ]; do
