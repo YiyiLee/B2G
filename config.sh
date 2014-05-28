@@ -206,7 +206,7 @@ case "$1" in
 
 "sp7710gaplus")
 	echo DEVICE=sp7710gaplus_gonk >> .tmp-config &&
-	echo LUNCH=sp7710gaplus_gonk-userdebug >> .tmp-config &&
+	echo PRODUCT_NAME=sp7710gaplus_gonk >> .tmp-config &&
 	echo TARGET_HVGA_ENABLE=true >> .tmp-config &&
 	echo GONK_VERSION=SP7710_13A_W13.39.7 >> .tmp-config &&
 	case "$BRANCH" in
