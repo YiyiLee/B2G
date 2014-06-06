@@ -1,0 +1,25 @@
+From f57e1a88157c3209260b67848a5791837cdf18a0 Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Fri, 6 Jun 2014 06:37:01 +0200
+Subject: [PATCH 1/2] Disable KSM in sp7715ga-native_defconfig
+
+---
+ arch/arm/configs/sp7715ga-native_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/configs/sp7715ga-native_defconfig b/arch/arm/configs/sp7715ga-native_defconfig
+index c20b335..d2681e3 100644
+--- a/arch/arm/configs/sp7715ga-native_defconfig
++++ b/arch/arm/configs/sp7715ga-native_defconfig
+@@ -453,7 +453,7 @@ CONFIG_MIGRATION=y
+ # CONFIG_PHYS_ADDR_T_64BIT is not set
+ CONFIG_ZONE_DMA_FLAG=0
+ CONFIG_BOUNCE=y
+-CONFIG_KSM=y
++# CONFIG_KSM is not set
+ CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+ CONFIG_CROSS_MEMORY_ATTACH=y
+ CONFIG_NEED_PER_CPU_KM=y
+-- 
+1.9.0
+
