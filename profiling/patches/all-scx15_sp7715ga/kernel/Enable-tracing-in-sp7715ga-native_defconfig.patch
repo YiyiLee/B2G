@@ -1,0 +1,27 @@
+From 86cde6561ad102175d5e6c63651381728e08e91f Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Fri, 6 Jun 2014 06:37:45 +0200
+Subject: [PATCH 2/2] Enable tracing in sp7715ga-native_defconfig
+
+---
+ arch/arm/configs/sp7715ga-native_defconfig | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/configs/sp7715ga-native_defconfig b/arch/arm/configs/sp7715ga-native_defconfig
+index d2681e3..011565c 100644
+--- a/arch/arm/configs/sp7715ga-native_defconfig
++++ b/arch/arm/configs/sp7715ga-native_defconfig
+@@ -3208,3 +3208,10 @@ CONFIG_ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE=y
+ # CONFIG_CORDIC is not set
+ # CONFIG_DDR is not set
+ # CONFIG_VIRTUALIZATION is not set
++
++
++CONFIG_FUNCTION_TRACER=y
++CONFIG_FUNCTION_GRAPH_TRACER=y
++CONFIG_STACK_TRACER=y
++CONFIG_DYNAMIC_FTRACE=y
++CONFIG_FTRACE=y
+-- 
+1.9.0
+
