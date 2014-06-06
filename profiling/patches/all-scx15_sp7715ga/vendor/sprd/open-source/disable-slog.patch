@@ -1,0 +1,23 @@
+From 3d12a3f0a32a4f2d6ddb8dcc5f6afa2db4442bde Mon Sep 17 00:00:00 2001
+From: Andreas Pehrson <pehrson@comoyo.com>
+Date: Wed, 4 Jun 2014 07:55:47 +0200
+Subject: [PATCH] Disable slog
+
+---
+ tools/slog/slog.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/slog/slog.conf b/tools/slog/slog.conf
+index f0ef867..7d579a4 100644
+--- a/tools/slog/slog.conf
++++ b/tools/slog/slog.conf
+@@ -1,5 +1,5 @@
+ #control: enable/disable
+-enable
++disable
+ 
+ #type	name		value
+ var	logpath		external
+-- 
+1.9.0
+
