@@ -16,7 +16,7 @@ echo "ADB Location: " $ADB
 
 if [ -z "${GDB}" ]; then
    if [ -d prebuilt ]; then
-      GDB=prebuilt/$(uname -s | tr "[[:upper:]]" "[[:lower:]]")-x86/toolchain/arm-linux-androideabi-4.4.x/bin/arm-linux-androideabi-gdb
+      GDB=prebuilt/alt-toolchain/toolchain/x86_64-linux-gnu/bin/arm-elf-linux-gdb
    elif [ -d prebuilts ]; then
       GDB=prebuilts/gcc/$(uname -s | tr "[[:upper:]]" "[[:lower:]]")-x86/arm/arm-linux-androideabi-4.7/bin/arm-linux-androideabi-gdb
       PYTHON_DIR=prebuilts/python/$(uname -s | tr "[[:upper:]]" "[[:lower:]]")-x86/2.7.5
