@@ -19,17 +19,17 @@
   <project path="build" name="platform_build" remote="b2g" revision="b2g-4.4.2_r1">
     <copyfile src="core/root.mk" dest="Makefile" />
   </project>
-  <project path="dalvik" name="fake-libdvm" remote="b2g" revision="v1.4"/>
-  <project path="gaia" name="gaia" remote="mozillaorg" revision="v1.4" />
-  <project path="gecko" name="gecko" remote="mozillaorg" revision="v1.4" />
+  <project path="dalvik" name="fake-libdvm" remote="b2g" revision="master"/>
+  <project path="gaia" name="gaia" remote="mozillaorg" revision="master" />
+  <project path="gecko" name="gecko" remote="mozillaorg" revision="master" />
   <project path="gonk-misc" name="gonk-misc" remote="comoyo" revision="perf" />
-  <project path="rilproxy" name="rilproxy" remote="b2g" revision="v1.4" />
-  <project path="librecovery" name="librecovery" remote="b2g" revision="v1.4" />
+  <project path="rilproxy" name="rilproxy" remote="b2g" revision="master" />
+  <project path="librecovery" name="librecovery" remote="b2g" revision="master" />
   <project path="prebuilt/alt-toolchain" name="b2g-toolchain-prebuilt" remote="comoyo" revision="gcc-4.7" />
-  <project path="external/moztt" name="moztt" remote="b2g" revision="v1.4" />
+  <project path="external/moztt" name="moztt" remote="b2g" revision="master" />
   <project path="external/apitrace" name="apitrace" remote="apitrace" revision="master" />
   <project path="external/valgrind" name="platform/external/valgrind" groups="pdk" />
-  <project name="l10n/bn-BD/gaia" path="gaia-l10n/bn-BD" remote="mozillaorg" revision="v1.4" />
+  <project name="l10n/bn-BD/gaia" path="gaia-l10n/bn-BD" remote="mozillaorg" revision="master" />
   <!-- Stock Android things -->
   <project path="abi/cpp" name="platform/abi/cpp" groups="pdk" />
   <project path="bionic" name="platform/bionic" groups="pdk" />
@@ -182,7 +182,6 @@
   <project path="gaia/customize_apps" name="gaia/customize_apps" remote="sprd-b2g" revision="sprdroid4.0.3_vlx_3.0_b2g" />
   <project path="gaia/local_mk" name="gaia/local_mk"  remote="sprd-b2g" revision="sprdroid4.0.3_vlx_3.0_b2g" />
   <project path="orangutan" name="orangutan" remote="sprd-b2g" revision="sprdroid4.0.3_vlx_3.0_b2g" />
-  <project path="sprd_patch" name="sprd_patch" remote="sprd-b2g" revision="sprdroid4.0.3_vlx_3.0_b2g" />
 
 </manifest>
 

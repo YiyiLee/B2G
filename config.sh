@@ -229,7 +229,7 @@ case "$1" in
 		;;
 	"profiling")
 		echo DEVICE_NAME=sp7715ga_gonk4.4 >> .tmp-config &&
-		use_local_manifest "sp7715ga_gonk4.4" "profiling/manifests/sp7715ga_gonk4.4.xml" &&
+		use_local_manifest "sp7715ga_gonk4.4" "profiling/manifests/sp7715ga_gonk4.4_master.xml" &&
 		repo_sync sp7715ga_gonk4.4
 		;;
 	*)
