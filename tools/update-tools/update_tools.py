@@ -19,6 +19,7 @@ from cStringIO import StringIO
 import datetime
 import hashlib
 import os
+import glob
 import platform
 import re
 import shutil
@@ -46,6 +47,9 @@ def validate_env(parser):
 
     if sys.version_info < (2, 7):
         parser.error("This tool requires Python 2.7 or greater")
+
+    if not which("arm-linux-androideabi-readelf", path=os.environ.get("ANDROID_TOOLCHAIN")):
+        parser.error("No readelf binary in ANDROID_TOOLCHAIN")
 
 def run_command(*args, **kwargs):
     try:
@@ -377,9 +381,8 @@ class FotaZip(zipfile.ZipFile):
     def write_updater_script(self, script):
         self.writestr(self.UPDATER_SCRIPT, script)
 
-    def write_default_update_binary(self):
-        prebuilt_update_binary = os.path.join(bin_dir, "gonk", "update-binary")
-        self.write(prebuilt_update_binary, self.UPDATE_BINARY)
+    def write_default_update_binary(self, update_bin):
+        self.write(update_bin, self.UPDATE_BINARY)
 
     def write_recursive(self, path, zip_path=None, filter=None):
         def zip_relpath(file_path):
@@ -406,7 +409,7 @@ class FotaZip(zipfile.ZipFile):
                     dirs.remove(d)
 
 class FotaZipBuilder(object):
-    def build_unsigned_zip(self, update_dir, output_zip):
+    def build_unsigned_zip(self, update_dir, output_zip, update_bin):
         if not os.path.exists(update_dir):
             raise UpdateException("Update dir doesn't exist: %s" % update_dir)
 
@@ -419,7 +422,7 @@ class FotaZipBuilder(object):
 
         if not os.path.exists(update_binary):
             print "Warning: update-binary not found, using default"
-            update_zipfile.write_default_update_binary()
+            update_zipfile.write_default_update_binary(update_bin)
 
         update_zipfile.write_recursive(update_dir)
         update_zipfile.close()
@@ -482,12 +485,12 @@ class GeckoMarBuilder(object):
         self.make_full_update = os.path.join(packaging_dir,
             "make_full_update.sh")
         if not os.path.exists(self.make_full_update):
-            raise UpdateException("Couldn't find %s " % make_full_update)
+            raise UpdateException("Couldn't find %s " % self.make_full_update)
 
         self.make_incremental_update = os.path.join(packaging_dir,
             "make_incremental_update.sh")
         if not os.path.exists(self.make_incremental_update):
-            raise UpdateException("Couldn't find %s " % make_incremental_update)
+            raise UpdateException("Couldn't find %s " % self.make_incremental_update)
 
     def build_gecko_mar(self, src_dir, output_mar, from_dir=None):
         if from_dir:
@@ -838,6 +841,14 @@ class FlashFotaBuilder(object):
             self.import_releasetools()
         self.generator = edify_generator.EdifyGenerator(1, {"fstab": self.fstab})
 
+    def GetFilesType(self, directory):
+        """
+        Compute file mime type for a directory
+        """
+        cmd = ['file', '--mime-type' ] + glob.glob(os.path.join(directory, '*'))
+        result = subprocess.check_output(cmd).split('\n')
+        return result
+
     def AssertMountIfNeeded(self, mount_point):
         """
            AssertMount the partition with the given mount_point
@@ -869,12 +880,14 @@ class FlashFotaBuilder(object):
            Find dependencies from readelf output
         """
         so_re = re.compile(r".*\[(.*)\.so\]")
-        result = run_command(["readelf", "-d", path])
+        readelf_android = "arm-linux-androideabi-readelf"
+        readelf_path = os.path.join(os.environ.get("ANDROID_TOOLCHAIN"), readelf_android)
+        result = run_command([readelf_path, "-d", path])
         dependencies = []
         for line in result.splitlines():
             if line.find("(NEEDED)") > 0:
                 match = so_re.match(line)
-                if match and not (match.group(1) + ".so" in b2g_libs):
+                if match and not (match.group(1) + ".so" in self.b2g_libs):
                     # print "Adding dep against", match.group(1), "for", path
                     dependencies.append(match.group(1) + ".so")
         return dependencies
@@ -883,9 +896,8 @@ class FlashFotaBuilder(object):
         """
            Build a list of file/sha1 values
         """
-        b2g_dir = os.path.join(self.system_dir, "b2g")
-        b2g_bins = b2g_libs + [ "b2g", "plugin-container", "updater" ]
-        b2g_exec_files = map(lambda x: os.path.join(b2g_dir, x), b2g_bins)
+        b2g_bins = self.b2g_libs + self.b2g_exec
+        b2g_exec_files = map(lambda x: os.path.join(self.out_b2g_dir, x), b2g_bins)
 
         deps_list = []
         for p in b2g_exec_files:
@@ -929,6 +941,53 @@ class FlashFotaBuilder(object):
         self.generator.script.append(cmd)
         self.generator.Print("Device is compatible")
 
+    def Umount(self, mount_point):
+        """
+           Unmounting a mount point. We cannot do it against a device directly.
+        """
+        self.generator.Print("Unmounting %s" % (mount_point))
+        self.generator.script.append(('unmount("%s");' % (mount_point)))
+
+    def Format(self):
+        """
+           Edify wrapper to add format() statements.
+
+	   Per bug 1047350 and bug 1008239:
+           Signature of the format() function available in Edify depends on
+           the implementation that gets pulled as update-binary and pushed
+           inside the zip file. Starting with AOSP SDK 16 (JB 4.1), it takes
+           an extra mount_point argument. The rationale here is:
+            - detect the SDK version at build time, and use the proper version
+            - update-binary that is embedded MUST be one built from source or
+              in sync with the source version. Using the prebuilt one from
+              tools/update-tools/bin/gonk/ is not a good idea.
+        """
+        format_statement = None
+        if self.sdk_version < 16:
+            format_statement = \
+                'format("%(fs_type)s", "%(partition_type)s", ' \
+                       '"%(device)s", %(size)d);'
+        else:
+            format_statement = \
+                'format("%(fs_type)s", "%(partition_type)s", ' \
+                       '"%(device)s", %(size)d, "%(mount_point)s");'
+
+        self.generator.Print("Formatting partitions ...")
+        for mount_point, partition in self.fstab.iteritems():
+            partition_type = common.PARTITION_TYPES[partition.fs_type]
+            parameters = {
+                'fs_type': partition.fs_type,
+                'partition_type': partition_type,
+                'device': partition.device,
+                'size': partition.fs_size,
+                'mount_point': mount_point
+            }
+            self.generator.Print("Using %(device)s" % parameters)
+            self.Umount(mount_point)
+            self.generator.Print("Formatting as %(fs_type)s" % parameters)
+            self.generator.AppendExtra(format_statement % parameters)
+        self.generator.Print("All partitions formatted.")
+
     def import_releasetools(self):
         releasetools_dir = os.path.join(b2g_dir, "build", "tools", "releasetools")
         sys.path.append(releasetools_dir)
@@ -947,14 +1006,22 @@ class FlashFotaBuilder(object):
             return False
         return True
 
-    def build_flash_fota(self, system_dir, public_key, private_key, output_zip):
+    def build_flash_fota(self, system_dir, public_key, private_key, output_zip, update_bin):
         fd, unsigned_zip = tempfile.mkstemp()
         os.close(fd)
+
+        def custom_filter(target, files):
+          return map(lambda x: os.path.basename(x.split(':')[0]), filter(lambda x: x.find(target) > 0, files))
+
+        self.out_b2g_dir = os.path.join(self.system_dir, "b2g")
+        files = self.GetFilesType(self.out_b2g_dir)
+        self.b2g_libs = custom_filter('x-sharedlib', files)
+        self.b2g_exec = custom_filter('x-executable', files)
 
         with FotaZip(unsigned_zip, "w") as flash_zip:
             flash_zip.write_recursive(system_dir, "system", filter=self.zip_filter)
             flash_zip.write_updater_script(self.build_flash_script())
-            flash_zip.write_default_update_binary()
+            flash_zip.write_default_update_binary(update_bin)
 
         FotaZipBuilder().sign_zip(unsigned_zip, public_key, private_key,
                                   output_zip)
@@ -963,15 +1030,17 @@ class FlashFotaBuilder(object):
     def build_flash_script(self):
         self.generator.Print("Starting B2G FOTA: " + self.fota_type)
 
+        cmd = ('show_progress(1.0, 0);')
+        self.generator.script.append(self.generator._WordWrap(cmd))
+
+        cmd = ('set_progress(0.25);')
+        self.generator.script.append(self.generator._WordWrap(cmd))
+
         if self.fota_check_device_name:
             self.AssertDeviceOrModel(self.fota_check_device_name)
 
         if not self.fota_type == 'partial':
-            for mount_point, partition in self.fstab.iteritems():
-                partition_type = common.PARTITION_TYPES[partition.fs_type]
-                self.generator.AppendExtra('format("%s", "%s", "%s", %d);' % \
-                    (partition.fs_type, partition_type, partition.device,
-                     partition.fs_size))
+            self.Format()
 
         for mount_point in self.fstab:
             self.AssertMountIfNeeded(mount_point)
@@ -979,7 +1048,8 @@ class FlashFotaBuilder(object):
         if self.fota_type == 'partial' and self.fota_check_gonk_version:
             self.AssertGonkVersion()
 
-        self.AssertSystemHasRwAccess()
+        if self.fota_type == 'partial':
+            self.AssertSystemHasRwAccess()
 
         if self.fota_type == 'partial':
             for d in self.fota_dirs:
@@ -991,6 +1061,9 @@ class FlashFotaBuilder(object):
             self.generator.script.append(self.generator._WordWrap(cmd))
             self.generator.Print("No previous stale update.")
 
+        cmd = ('set_progress(0.5);')
+        self.generator.script.append(self.generator._WordWrap(cmd))
+
         self.generator.Print("Remove stale libdmd.so")
         self.generator.DeleteFiles(["/system/b2g/libdmd.so"])
 
@@ -1001,6 +1074,9 @@ class FlashFotaBuilder(object):
         self.generator.Print("Extracting files to /system")
         self.generator.UnpackPackageDir("system", "/system")
 
+        cmd = ('set_progress(0.75);')
+        self.generator.script.append(self.generator._WordWrap(cmd))
+
         self.generator.Print("Creating symlinks")
         self.generator.MakeSymlinks(self.symlinks)
 
@@ -1010,6 +1086,9 @@ class FlashFotaBuilder(object):
         if self.fota_type == 'partial':
             cmd = ('else ui_print("Restoring previous stale update."); endif;')
             self.generator.script.append(self.generator._WordWrap(cmd))
+
+        cmd = ('set_progress(1.0);')
+        self.generator.script.append(self.generator._WordWrap(cmd))
 
         self.generator.Print("Unmounting ...")
         self.generator.UnmountAll()

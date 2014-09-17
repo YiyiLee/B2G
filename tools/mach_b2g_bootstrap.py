@@ -189,6 +189,12 @@ def bootstrap(b2g_home):
             print(output)
         f.close()
 
+    # Absolutize GECKO_OBJDIR here, since otherwise mach will try to
+    # absolutize it relative to the topsrcdir, which might be different
+    # if GECKO_PATH is in use.
+    if os.environ.get('GECKO_OBJDIR') is not None:
+       os.environ['GECKO_OBJDIR'] = os.path.join(b2g_home, os.environ['GECKO_OBJDIR'])
+
     # If a gecko source tree is detected, its mach modules are also
     # loaded.
     gecko_dir = os.environ.get('GECKO_PATH', os.path.join(b2g_home, 'gecko'))
@@ -238,6 +244,17 @@ def bootstrap(b2g_home):
         if sys.platform.startswith('darwin'):
             xre_path = os.path.join(xre_path, 'XUL.framework', 'Versions', 'Current')
 
+    def get_build_var(name):
+        env = os.environ.copy()
+        env.update({'CALLED_FROM_SETUP': 'true',
+                    'BUILD_SYSTEM': 'build/core'})
+        command = ['make', '--no-print-directory',
+                   '-C', b2g_home,
+                   '-f', 'build/core/config.mk',
+                   'dumpvar-abs-%s' % name]
+        DEVNULL = open(os.devnull, 'wb')
+        return subprocess.check_output(command, env=env, stderr=DEVNULL).strip()
+
     def populate_context(context):
         context.state_dir = state_dir
         context.topdir = gecko_dir
@@ -245,6 +262,7 @@ def bootstrap(b2g_home):
         context.xre_path = xre_path
         # device name is set from load configuration step above
         context.device_name = os.environ.get('DEVICE_NAME', '').rstrip()
+        context.get_build_var = get_build_var
 
     mach = mach.main.Mach(b2g_home)
     mach.populate_context_handler = populate_context

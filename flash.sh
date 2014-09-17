@@ -73,6 +73,14 @@ fastboot_flash_image()
 	fi
 }
 
+fastboot_flash_image_if_exists()
+{
+	if [ -e "out/target/product/$DEVICE/$1.img" ]; then
+		fastboot_flash_image $1
+	fi
+}
+
+
 flash_fastboot()
 {
 	local lockedness=$1 project=$2
@@ -85,13 +93,15 @@ flash_fastboot()
 		;;
 	esac
 	case $project in
-	"system"|"boot"|"userdata"|"")
+	"system"|"boot"|"userdata"|"cache"|"")
 		;;
 	*)
-		echo "$0: Unrecognized project: $project"
+		echo "$0: Unrecognized project/partition: $project"
 		return 1
 		;;
 	esac
+
+	delete_single_variant_persist
 
 	case $DEVICE in
 	"helix")
@@ -117,13 +127,12 @@ flash_fastboot()
 	esac
 
 	case $project in
-	"system" | "boot" | "userdata")
+	"system" | "boot" | "userdata" | "cache")
 		fastboot_flash_image $project &&
 		run_fastboot reboot
 		;;
 
 	"")
-		# helix doesn't support erase command in fastboot mode.
 		VERB="erase"
 		if [ "$DEVICE" == "hammerhead" ] || [ "$DEVICE" == "mako" ] ||
 		[ "$DEVICE" == "flo" ]; then
@@ -133,6 +142,7 @@ flash_fastboot()
 		if [ "$DEVICE" == "flatfish" ]; then
 			DATA_PART_NAME="data"
 		fi
+		# helix/dolphin don't support erase command in fastboot mode.
 		if [ "$DEVICE" != "helix" -a "$DEVICE_NAME" != "dolphin" ]; then
 			run_fastboot $VERB cache &&
 			run_fastboot $VERB $DATA_PART_NAME
@@ -147,8 +157,8 @@ flash_fastboot()
 			;;
 		esac
 		fastboot_flash_image userdata &&
-		([ ! -e out/target/product/$DEVICE/boot.img ] ||
-		fastboot_flash_image boot) &&
+		fastboot_flash_image_if_exists cache &&
+		fastboot_flash_image_if_exists boot &&
 		fastboot_flash_image system &&
 		run_fastboot reboot &&
 		update_time
@@ -175,6 +185,7 @@ flash_heimdall()
 		exit -1
 	fi
 
+	delete_single_variant_persist &&
 	run_adb reboot download && sleep 8
 	if [ $? -ne 0 ]; then
 		echo Couldn\'t reboot into download mode. Hope you\'re already in download mode
@@ -245,10 +256,16 @@ delete_extra_gecko_files_on_device()
 		#    you squint at files_to_remove, you'll see that it will
 		#    contain files which are on the host but not on the device;
 		#    obviously we can't remove those files from the device).
-
-		run_adb shell "cd /system/b2g && rm $files_to_remove" > /dev/null
+		for to_remove in $files_to_remove; do
+			run_adb shell "rm /system/b2g/$to_remove" > /dev/null
+		done
 	fi
 	return 0
+}
+
+delete_single_variant_persist()
+{
+	run_adb shell rm -r /persist/svoperapps > /dev/null
 }
 
 flash_gecko()
@@ -365,7 +382,7 @@ case "$DEVICE" in
 	flash_fastboot nounlock $PROJECT
 	;;
 
-"sp77"*|"scx15_sp77"*|"sp6821"*)
+"sp77"*|"scx15"*|"sp6821"*)
 	flash_fastboot nounlock $PROJECT
 	;;
 

@@ -144,10 +144,10 @@ case "$1" in
 	repo_sync $1
 	;;
 
-"flame")
-	echo PRODUCT_NAME=$1 >> .tmp-config &&
+"flame"|"flame-kk")
+	echo PRODUCT_NAME=flame >> .tmp-config &&
 	use_local_manifest flame "profiling/manifests/flame.xml" &&
-       repo_sync $1
+	repo_sync $1
 	;;
 
 "fugu")
@@ -250,6 +250,12 @@ case "$1" in
 	repo_sync $1
 	;;
 
+"vixen")
+	echo DEVICE=vixen >> .tmp-config &&
+	echo PRODUCT_NAME=vixen >> .tmp-config &&
+	repo_sync $1
+	;;  
+
 "emulator"|"emulator-jb"|"emulator-kk")
 	echo DEVICE=generic >> .tmp-config &&
 	echo LUNCH=full-eng >> .tmp-config &&
@@ -264,6 +270,11 @@ case "$1" in
 
 "flo")
 	echo DEVICE=flo >> .tmp-config &&
+	repo_sync $1
+	;;
+
+"rpi")
+	echo PRODUCT_NAME=rpi >> .tmp-config &&
 	repo_sync $1
 	;;
 
@@ -298,8 +309,11 @@ case "$1" in
 	echo - sp7715ga ======= Dual SIM, v1.4
 	echo - dolphin
 	echo - pandaboard
+	echo - vixen
 	echo - flatfish
 	echo - flame
+	echo - flame-kk
+	echo - rpi "(Revision B)"
 	echo - emulator
 	echo - emulator-jb
 	echo - emulator-kk
