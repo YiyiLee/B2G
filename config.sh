@@ -156,7 +156,7 @@ case "$1" in
 	repo_sync $1
 	;;
 
-"flame")
+"flame"|"flame-kk")
 	echo PRODUCT_NAME=$1 >> .tmp-config &&
        repo_sync $1
 	;;
@@ -312,6 +312,7 @@ case "$1" in
 	echo - vixen
 	echo - flatfish
 	echo - flame
+	echo - flame-kk
 	echo - emulator
 	echo - emulator-jb
 	echo - emulator-kk
