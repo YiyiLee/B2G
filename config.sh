@@ -144,9 +144,15 @@ case "$1" in
 	repo_sync $1
 	;;
 
-"flame"|"flame-kk")
+"flame")
 	echo PRODUCT_NAME=flame >> .tmp-config &&
 	use_local_manifest flame "profiling/manifests/flame.xml" &&
+	repo_sync $1
+	;;
+
+"flame-kk")
+	echo PRODUCT_NAME=flame >> .tmp-config &&
+	use_local_manifest flame-kk "profiling/manifests/flame-kk.xml" &&
 	repo_sync $1
 	;;
 
